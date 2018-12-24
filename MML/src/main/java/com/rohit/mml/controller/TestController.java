@@ -1,17 +1,22 @@
 package com.rohit.mml.controller;
 
+import java.security.Principal;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 @RestController
 public class TestController {
 
     @GetMapping("/api/test/user")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public String userAccess(HttpServletRequest req) {
+    public String userAccess(HttpServletRequest req, Principal principal) throws JsonProcessingException {
+
         System.out.println(req.isUserInRole("ROLE_ADMIN"));
         System.out.println(req.isUserInRole("USER"));
         return ">>> User Contents!";
