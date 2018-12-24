@@ -46,16 +46,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
-    // @formatter:off
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        String[] allowFullAuth = { "/api/auth/**", "/api/movies/**", "/api/users/**", "/v2/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security", "/swagger-ui.html",
+                "/webjars/**" };
+
+        // @formatter:off
         http.cors().and().csrf().disable()
-            .authorizeRequests().antMatchers("/api/auth/**", "/api/movies/**", "/api/users/**").permitAll()
+            .authorizeRequests().antMatchers(allowFullAuth).permitAll()
             .anyRequest().authenticated().and()
             .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+        // @formatter:on
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
-    // @formatter:on
 }

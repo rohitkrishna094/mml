@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.github.javafaker.Faker;
+import com.rohit.mml.documentation.SwaggerConfig;
 import com.rohit.mml.model.Movie;
 import com.rohit.mml.model.MovieSmall;
 import com.rohit.mml.model.User;
@@ -25,6 +27,7 @@ import com.rohit.mml.repository.UserRepository;
 import com.rohit.mml.util.FileUtils;
 
 @SpringBootApplication
+@Import(SwaggerConfig.class)
 public class MmlApplication implements CommandLineRunner {
 
     @Autowired
