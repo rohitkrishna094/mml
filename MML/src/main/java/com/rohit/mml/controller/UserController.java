@@ -27,11 +27,14 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping("")
-    public String getAllUsers() throws JsonProcessingException {
+    public String getAllUsers() {
         List<User> users = userRepository.findAll(PageRequest.of(0, 10)).getContent();
         ObjectMapper mapper = new ObjectMapper();
-        String s = mapper.writerWithView(UserViews.ExtendedPublic.class).writeValueAsString(users);
-        return s;
+        try {
+            return mapper.writerWithView(UserViews.Public.class).writeValueAsString(users);
+        } catch (JsonProcessingException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to process json");
+        }
     }
 
     // Todo add more query params
