@@ -46,4 +46,6 @@ public class MovieController {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Movie with id: " + id + " not found");
     }
 
+    // Todo: Edit and delete movies if users are mods
+
 }
