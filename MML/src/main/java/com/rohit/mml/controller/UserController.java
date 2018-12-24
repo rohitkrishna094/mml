@@ -5,11 +5,11 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,8 +25,16 @@ public class UserController {
 
     @GetMapping("")
     public List<User> getAllUsers() {
-        Pageable pageable = PageRequest.of(0, 10);
-        return userRepository.findAll(pageable).getContent();
+        return userRepository.findAll(PageRequest.of(0, 10)).getContent();
+    }
+
+    // Todo add more query params
+    @GetMapping("/search")
+    public List<User> getUsers(@RequestParam(value = "page", defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int size) {
+        if (pageNumber < 0 || size < 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Check page and size get param values. Page should not be less than zero while size should not be less than 1");
+        }
+        return userRepository.findAll(PageRequest.of(pageNumber, size)).getContent();
     }
 
     @GetMapping("/{id}")

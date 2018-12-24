@@ -4,9 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,15 +23,14 @@ public class MovieController {
     @Autowired
     private MovieRepository movieRepository;
 
+    // Todo: Add more query params
     // Get list of movies
     @GetMapping("/search")
-    public List<Movie> getMovies(@RequestParam(value = "page") int pageNumber, @RequestParam int size) {
+    public List<Movie> getMovies(@RequestParam(value = "page", defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int size) {
         if (pageNumber < 0 || size < 1) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Check page and size get param values. Page should not be less than zero while size should not be less than 1");
         }
-        Pageable pageable = PageRequest.of(pageNumber, size);
-        Page<Movie> page = movieRepository.findAll(pageable);
-        return page.getContent();
+        return movieRepository.findAll(PageRequest.of(pageNumber, size)).getContent();
     }
 
     // Get specific movie info
