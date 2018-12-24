@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rohit.mml.jacksonviews.UserViews;
 import com.rohit.mml.model.User;
 import com.rohit.mml.repository.UserRepository;
 
@@ -24,8 +27,11 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping("")
-    public List<User> getAllUsers() {
-        return userRepository.findAll(PageRequest.of(0, 10)).getContent();
+    public String getAllUsers() throws JsonProcessingException {
+        List<User> users = userRepository.findAll(PageRequest.of(0, 10)).getContent();
+        ObjectMapper mapper = new ObjectMapper();
+        String s = mapper.writerWithView(UserViews.ExtendedPublic.class).writeValueAsString(users);
+        return s;
     }
 
     // Todo add more query params

@@ -1,12 +1,16 @@
 package com.rohit.mml.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.rohit.mml.jacksonviews.UserViews;
 
 @Document(collection = "users")
 public class User {
@@ -14,25 +18,37 @@ public class User {
     @Id
     private String id;
     private String username;
+
     @JsonIgnore
     private String password;
     private Set<Role> roles = new HashSet<>();
 
-    public User() {
+    @JsonView(UserViews.ExtendedPublic.class)
+    private List<WatchList> watchLists;
 
+    public User() {
+        this.watchLists = new ArrayList<>();
     }
 
     public User(String username, String password) {
-        super();
+        this.watchLists = new ArrayList<>();
         this.username = username;
         this.password = password;
     }
 
     public User(String username, String password, Set<Role> roles) {
-        super();
+        this.watchLists = new ArrayList<>();
         this.username = username;
         this.password = password;
         this.roles = roles;
+    }
+
+    public List<WatchList> getWatchLists() {
+        return watchLists;
+    }
+
+    public void setWatchLists(List<WatchList> watchLists) {
+        this.watchLists = watchLists;
     }
 
     public String getId() {
