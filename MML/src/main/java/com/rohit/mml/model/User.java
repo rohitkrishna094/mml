@@ -1,8 +1,7 @@
 package com.rohit.mml.model;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
@@ -24,31 +23,38 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
     @JsonView(UserViews.ExtendedPublic.class)
-    private List<WatchList> watchLists;
+    private WatchList watchList;
 
     public User() {
-        this.watchLists = new ArrayList<>();
     }
 
     public User(String username, String password) {
-        this.watchLists = new ArrayList<>();
         this.username = username;
         this.password = password;
     }
 
     public User(String username, String password, Set<Role> roles) {
-        this.watchLists = new ArrayList<>();
         this.username = username;
         this.password = password;
         this.roles = roles;
     }
 
-    public List<WatchList> getWatchLists() {
-        return watchLists;
+    public boolean addItem(Map<String, Movie> map) {
+        Map.Entry<String, Movie> entry = map.entrySet().iterator().next();
+        String key = entry.getKey();
+        Movie movie = entry.getValue();
+        if (watchList == null)
+            watchList = new WatchList();
+        boolean res = watchList.addItem(key, movie);
+        return res;
     }
 
-    public void setWatchLists(List<WatchList> watchLists) {
-        this.watchLists = watchLists;
+    public WatchList getWatchList() {
+        return watchList;
+    }
+
+    public void setWatchList(WatchList watchList) {
+        this.watchList = watchList;
     }
 
     public String getId() {
