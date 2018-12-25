@@ -1,5 +1,6 @@
 package com.rohit.mml.model;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -30,11 +31,13 @@ public class User {
 
     public User() {
         this.profile = new Profile();
+        this.profile.setJoinDate(new Date().toString());
         this.watchList = new WatchList();
     }
 
     public User(String username, String password) {
         this.profile = new Profile();
+        this.profile.setJoinDate(new Date().toString());
         this.watchList = new WatchList();
         this.username = username;
         this.password = password;

@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bson.types.ObjectId;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class WatchList {
 
-    private String _id;
     private List<Movie> currentlyWatching;
     private List<Movie> completed;
     private List<Movie> onHold;
@@ -20,7 +17,6 @@ public class WatchList {
     private List<Movie> notInterested;
 
     public WatchList() {
-        this._id = ObjectId.get().toString();
         this.currentlyWatching = new ArrayList<>();
         this.completed = new ArrayList<>();
         this.onHold = new ArrayList<>();
@@ -29,8 +25,7 @@ public class WatchList {
         this.notInterested = new ArrayList<>();
     }
 
-    public WatchList(String _id, List<Movie> currentlyWatching, List<Movie> completed, List<Movie> onHold, List<Movie> dropped, List<Movie> planToWatch, List<Movie> notInterested) {
-        this._id = ObjectId.get().toString();
+    public WatchList(List<Movie> currentlyWatching, List<Movie> completed, List<Movie> onHold, List<Movie> dropped, List<Movie> planToWatch, List<Movie> notInterested) {
         this.currentlyWatching = currentlyWatching;
         this.completed = completed;
         this.onHold = onHold;
@@ -54,14 +49,6 @@ public class WatchList {
                 return true;
         }
         return false;
-    }
-
-    public String get_id() {
-        return _id;
-    }
-
-    public void set_id(String _id) {
-        this._id = _id;
     }
 
     public List<Movie> getCurrentlyWatching() {

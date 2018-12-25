@@ -1,15 +1,12 @@
 package com.rohit.mml.model;
 
-import java.util.Date;
-
-import org.bson.types.ObjectId;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+@JsonIgnoreProperties(value = { "currentlyWatching", "completed", "onHold", "dropped", "notInterested", "planToWatch" }, allowGetters = true)
 public class Profile {
 
-    private String _id;
     private Integer currentlyWatching = 0;
     private Integer completed = 0;
     private Integer onHold = 0;
@@ -25,14 +22,11 @@ public class Profile {
     private String location = "";
 
     public Profile() {
-        this._id = ObjectId.get().toString();
-        this.joinDate = new Date().toString();
     }
 
-    public Profile(String _id, Integer currentlyWatching, Integer completed, Integer onHold, Integer dropped, Integer notInterested, Integer planToWatch, String firstName, String lastName,
-            String birthday, String joinDate, String profileImageUrl, String gender, String location) {
+    public Profile(Integer currentlyWatching, Integer completed, Integer onHold, Integer dropped, Integer notInterested, Integer planToWatch, String firstName, String lastName, String birthday,
+            String joinDate, String profileImageUrl, String gender, String location) {
         super();
-        this._id = _id;
         this.currentlyWatching = currentlyWatching;
         this.completed = completed;
         this.onHold = onHold;
@@ -46,14 +40,6 @@ public class Profile {
         this.profileImageUrl = profileImageUrl;
         this.gender = gender;
         this.location = location;
-    }
-
-    public String get_id() {
-        return _id;
-    }
-
-    public void set_id(String _id) {
-        this._id = _id;
     }
 
     public Integer getCurrentlyWatching() {

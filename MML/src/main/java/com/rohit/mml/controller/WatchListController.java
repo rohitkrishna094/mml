@@ -22,7 +22,6 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rohit.mml.jacksonviews.UserViews;
 import com.rohit.mml.model.Movie;
 import com.rohit.mml.model.User;
@@ -30,6 +29,7 @@ import com.rohit.mml.model.WatchList;
 import com.rohit.mml.repository.MovieRepository;
 import com.rohit.mml.repository.UserRepository;
 import com.rohit.mml.util.NullAwareBeanArrayUtilsBean;
+import com.rohit.mml.util.StringUtils;
 
 @RestController
 @RequestMapping("/api/users")
@@ -51,15 +51,12 @@ public class WatchListController {
         Optional<User> opt = userRepository.findByUsername(principal.getName());
         if (opt.isPresent()) {
             User user = opt.get();
-            ObjectMapper mapper = new ObjectMapper();
-
             try {
-                return mapper.writerWithView(UserViews.ExtendedPublic.class).writeValueAsString(user);
+                return StringUtils.pojoToJsonWithView(user, UserViews.ExtendedPublic.class);
             } catch (JsonProcessingException e) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to process json");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unable to process json");
             }
         }
-
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
     }
 
@@ -69,12 +66,10 @@ public class WatchListController {
         Optional<User> opt = userRepository.findById(id);
         if (opt.isPresent()) {
             User user = opt.get();
-            ObjectMapper mapper = new ObjectMapper();
-
             try {
-                return mapper.writerWithView(UserViews.ExtendedPublic.class).writeValueAsString(user);
+                return StringUtils.pojoToJsonWithView(user, UserViews.ExtendedPublic.class);
             } catch (JsonProcessingException e) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to process json");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unable to process json");
             }
 
         }
@@ -108,11 +103,10 @@ public class WatchListController {
             if (result == false)
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please make sure the field in request body is right. Check the schema for this endpoint");
             User saved = userRepository.save(user);
-            ObjectMapper mapper = new ObjectMapper();
             try {
-                return mapper.writerWithView(UserViews.ExtendedPublic.class).writeValueAsString(saved);
+                return StringUtils.pojoToJsonWithView(saved, UserViews.ExtendedPublic.class);
             } catch (JsonProcessingException e) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to process json");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unable to process json");
             }
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Current logged in user not found");
@@ -132,11 +126,10 @@ public class WatchListController {
             if (mOpt.isPresent()) {
                 user.removeItem(mOpt.get());
                 User saved = userRepository.save(user);
-                ObjectMapper mapper = new ObjectMapper();
                 try {
-                    return mapper.writerWithView(UserViews.ExtendedPublic.class).writeValueAsString(saved);
+                    return StringUtils.pojoToJsonWithView(saved, UserViews.ExtendedPublic.class);
                 } catch (JsonProcessingException e) {
-                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to process json");
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unable to process json");
                 }
             }
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Movie with id: " + mid + " not found.");
@@ -146,7 +139,7 @@ public class WatchListController {
 
     // Save a new watchlist's item into this list only if user is the current user
     @PostMapping("/{id}/watchlist/save")
-    public String saveWatchList(Principal principal, @PathVariable String id, @RequestBody WatchList watchList) throws IllegalAccessException, InvocationTargetException {
+    public String saveWatchList(Principal principal, @PathVariable String id, @RequestBody WatchList watchList) {
         // check if user is current user
         if (principal == null || principal.getName() == null)
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Please pass the correct token or check your credentials");
@@ -160,22 +153,16 @@ public class WatchListController {
             // Using this approach we have to send entire watchList object. Change it so that clients can only send a part of it
             BeanUtilsBean notNull = new NullAwareBeanArrayUtilsBean();
             WatchList w = user.getWatchList();
-            System.out.println(w);
-            if (w == null)
-                w = new WatchList();
-            notNull.copyProperties(w, watchList);
-
-            user.setWatchList(w);
-            User saved = userRepository.save(user);
-
-            ObjectMapper mapper = new ObjectMapper();
-
             try {
-                return mapper.writerWithView(UserViews.ExtendedPublic.class).writeValueAsString(saved);
+                notNull.copyProperties(w, watchList);
+                user.setWatchList(w);
+                User saved = userRepository.save(user);
+                return StringUtils.pojoToJsonWithView(saved, UserViews.ExtendedPublic.class);
+            } catch (IllegalAccessException | InvocationTargetException e1) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to copy beans");
             } catch (JsonProcessingException e) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to process json");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unable to process json");
             }
-
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id " + id + " not found");
     }
