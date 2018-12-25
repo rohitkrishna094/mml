@@ -120,8 +120,6 @@ public class WatchList {
 
     // key represents which list this movie should go into
     public boolean addItem(String key, Movie movie) {
-        System.out.println("here");
-
         removeMovieIfPresentAnywhereElse(movie);
         if (key.equals("currentlyWatching")) {
             currentlyWatching.add(movie);

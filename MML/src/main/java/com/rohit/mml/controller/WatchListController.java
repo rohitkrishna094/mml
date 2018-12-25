@@ -26,6 +26,7 @@ import com.rohit.mml.jacksonviews.UserViews;
 import com.rohit.mml.model.Movie;
 import com.rohit.mml.model.User;
 import com.rohit.mml.model.WatchList;
+import com.rohit.mml.repository.MovieRepository;
 import com.rohit.mml.repository.UserRepository;
 import com.rohit.mml.util.NullAwareBeanArrayUtilsBean;
 
@@ -35,6 +36,9 @@ public class WatchListController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MovieRepository movieRepository;
 
     // Get watchlist(but return entire user) for current user - needs JWT token
     @GetMapping(value = { "/watchlist", "/watchlist/current" })
@@ -85,9 +89,16 @@ public class WatchListController {
         String key = entry.getKey();
         Movie movie = (Movie) map.get(key);
 
-        if (movie.getImdbID() == null)
-            if (map == null || map.size() != 1 || movie.getImdbID() == null)
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please pass only one field and make sure the value for that field is a movie schema");
+        if (map == null || map.size() != 1 || movie.getImdbID() == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please pass only one field and make sure the value for that field is a movie schema");
+        Optional<Movie> mOpt = movieRepository.findByImdbID(movie.getImdbID());
+        System.out.println(mOpt.isPresent());
+        if (!mOpt.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please make sure that imdbID is correct");
+        } else {
+            movie = mOpt.get();
+        }
+
         String username = principal.getName();
         Optional<User> opt = userRepository.findByUsername(username);
         if (opt.isPresent()) {
