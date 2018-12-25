@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.rohit.mml.jacksonviews.UserViews;
 
 @Document(collection = "users")
@@ -29,10 +31,14 @@ public class User {
     @JsonView(UserViews.ExtendedPublic.class)
     private Profile profile;
 
+    @JsonView(UserViews.ExtendedPublic.class)
+    private Settings settings;
+
     public User() {
         this.profile = new Profile();
         this.profile.setJoinDate(new Date().toString());
         this.watchList = new WatchList();
+        this.settings = new Settings();
     }
 
     public User(String username, String password) {
@@ -41,6 +47,7 @@ public class User {
         this.watchList = new WatchList();
         this.username = username;
         this.password = password;
+        this.settings = new Settings();
     }
 
     public User(String username, String password, Set<Role> roles) {
@@ -49,6 +56,13 @@ public class User {
         this.username = username;
         this.password = password;
         this.roles = roles;
+        this.settings = new Settings();
+    }
+
+    @Override
+    public String toString() {
+        Gson gson = new GsonBuilder().disableHtmlEscaping().setDateFormat("yyyy-MM-dd").create();
+        return gson.toJson(this);
     }
 
     public boolean addItem(Map<String, Movie> map) {
@@ -73,6 +87,14 @@ public class User {
         profile.setCompleted(watchList.getCompleted().size());
         profile.setDropped(watchList.getDropped().size());
         return profile;
+    }
+
+    public Settings getSettings() {
+        return settings;
+    }
+
+    public void setSettings(Settings settings) {
+        this.settings = settings;
     }
 
     public Profile getProfile() {
