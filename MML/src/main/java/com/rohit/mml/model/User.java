@@ -25,15 +25,24 @@ public class User {
     @JsonView(UserViews.ExtendedPublic.class)
     private WatchList watchList;
 
+    @JsonView(UserViews.ExtendedPublic.class)
+    private Profile profile;
+
     public User() {
+        this.profile = new Profile();
+        this.watchList = new WatchList();
     }
 
     public User(String username, String password) {
+        this.profile = new Profile();
+        this.watchList = new WatchList();
         this.username = username;
         this.password = password;
     }
 
     public User(String username, String password, Set<Role> roles) {
+        this.profile = new Profile();
+        this.watchList = new WatchList();
         this.username = username;
         this.password = password;
         this.roles = roles;
@@ -43,10 +52,32 @@ public class User {
         Map.Entry<String, Movie> entry = map.entrySet().iterator().next();
         String key = entry.getKey();
         Movie movie = entry.getValue();
-        if (watchList == null)
-            watchList = new WatchList();
         boolean res = watchList.addItem(key, movie);
+        updateWatchListProfile();
         return res;
+    }
+
+    public void removeItem(Movie movie) {
+        watchList.removeMovieIfPresentAnywhereElse(movie, true);
+        updateWatchListProfile();
+    }
+
+    public Profile updateWatchListProfile() {
+        profile.setCurrentlyWatching(watchList.getCurrentlyWatching().size());
+        profile.setOnHold(watchList.getOnHold().size());
+        profile.setPlanToWatch(watchList.getPlanToWatch().size());
+        profile.setNotInterested(watchList.getNotInterested().size());
+        profile.setCompleted(watchList.getCompleted().size());
+        profile.setDropped(watchList.getDropped().size());
+        return profile;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     public WatchList getWatchList() {
@@ -87,11 +118,6 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
-    }
-
-    public void removeItem(Movie movie) {
-        watchList.removeMovieIfPresentAnywhereElse(movie, true);
-
     }
 
 }

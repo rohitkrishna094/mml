@@ -49,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         String[] allowFullAuth = { "/api/auth/**", "/api/movies/**", "/api/users/**", "/v2/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security", "/swagger-ui.html",
-                "/webjars/**", "/swagger-resources/configuration/ui", "/swagger-resources/configuration/security", "/csrf", "/favicon.ico" };
+                "/webjars/**", "/swagger-resources/configuration/ui", "/swagger-resources/configuration/security", "/csrf", "/favicon.ico", "/api/profile/**" };
 
         // @formatter:off
         http.cors().and().csrf().disable()
