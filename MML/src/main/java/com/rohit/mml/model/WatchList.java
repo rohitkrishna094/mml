@@ -120,7 +120,7 @@ public class WatchList {
 
     // key represents which list this movie should go into
     public boolean addItem(String key, Movie movie) {
-        removeMovieIfPresentAnywhereElse(movie);
+        removeMovieIfPresentAnywhereElse(movie, false);
         if (key.equals("currentlyWatching")) {
             currentlyWatching.add(movie);
             return true;
@@ -143,19 +143,20 @@ public class WatchList {
         return false;
     }
 
-    public void removeMovieIfPresentAnywhereElse(Movie movie) {
+    // 3rd argument: true-mongoId, false: imdbId
+    public void removeMovieIfPresentAnywhereElse(Movie movie, boolean mongoId) {
         List<List<Movie>> lists = Arrays.asList(currentlyWatching, completed, onHold, dropped, planToWatch, notInterested);
         for (int i = 0; i < lists.size(); i++) {
             if (isMoviePresentInList(lists.get(i), movie)) {
                 List<Movie> list = lists.get(i);
-                removeMovieFromList(list, movie);
+                removeMovieFromList(list, movie, mongoId);
             }
         }
     }
 
-    private void removeMovieFromList(List<Movie> list, Movie movie) {
+    private void removeMovieFromList(List<Movie> list, Movie movie, boolean mongoId) {
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getImdbID().equals(movie.getImdbID())) {
+            if ((mongoId && list.get(i).getId().equals(movie.getId())) || (list.get(i).getImdbID().equals(movie.getImdbID()))) {
                 list.remove(i);
                 break;
             }

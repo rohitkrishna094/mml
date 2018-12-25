@@ -89,4 +89,9 @@ public class User {
         this.roles = roles;
     }
 
+    public void removeItem(Movie movie) {
+        watchList.removeMovieIfPresentAnywhereElse(movie, true);
+
+    }
+
 }

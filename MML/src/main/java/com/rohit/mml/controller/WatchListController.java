@@ -10,6 +10,7 @@ import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -109,11 +110,36 @@ public class WatchListController {
             User saved = userRepository.save(user);
             ObjectMapper mapper = new ObjectMapper();
             try {
-                return mapper.writerWithView(UserViews.ExtendedPublic.class).writeValueAsString(user);
+                return mapper.writerWithView(UserViews.ExtendedPublic.class).writeValueAsString(saved);
             } catch (JsonProcessingException e) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to process json");
             }
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Current logged in user not found");
+    }
 
+    // Delete or remove entry from watchlist mid represent movie id from mongodb, not imdbID
+    @DeleteMapping("/watchlist/{mid}")
+    public String deleteItem(Principal principal, @PathVariable String mid) {
+        if (principal == null || principal.getName() == null)
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Please pass the correct token or check your credentials");
+
+        String username = principal.getName();
+        Optional<User> opt = userRepository.findByUsername(username);
+        if (opt.isPresent()) {
+            User user = opt.get();
+            Optional<Movie> mOpt = movieRepository.findById(mid);
+            if (mOpt.isPresent()) {
+                user.removeItem(mOpt.get());
+                User saved = userRepository.save(user);
+                ObjectMapper mapper = new ObjectMapper();
+                try {
+                    return mapper.writerWithView(UserViews.ExtendedPublic.class).writeValueAsString(saved);
+                } catch (JsonProcessingException e) {
+                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to process json");
+                }
+            }
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Movie with id: " + mid + " not found.");
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Current logged in user not found");
     }
