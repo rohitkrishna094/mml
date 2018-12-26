@@ -13,9 +13,15 @@ class Head extends Component {
           <Menu.Item key="1">
             <Link to="/">Home</Link>
           </Menu.Item>
-          <Menu.Item key="2">Movies</Menu.Item>
-          <Menu.Item key="3">Profile</Menu.Item>
-          <Menu.Item key="4">Watchlist</Menu.Item>
+          <Menu.Item key="2">
+            <Link to="/movies">Movies</Link>
+          </Menu.Item>
+          <Menu.Item key="3">
+            <Link to="/profile">Profile</Link>
+          </Menu.Item>
+          <Menu.Item key="4">
+            <Link to="/watchlist">Watchlist</Link>
+          </Menu.Item>
           <Menu.Item key="5" style={{ float: 'right' }}>
             <Link to="/signup">Signup</Link>
           </Menu.Item>
