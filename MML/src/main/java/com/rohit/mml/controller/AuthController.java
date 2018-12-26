@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.JsonObject;
 import com.rohit.mml.model.Role;
 import com.rohit.mml.model.RoleName;
 import com.rohit.mml.model.User;
@@ -62,8 +63,10 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@Valid @RequestBody SignUpForm signUpRequest) {
+        JsonObject jo = new JsonObject();
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return new ResponseEntity<String>("Fail -> Username is already taken!", HttpStatus.BAD_REQUEST);
+            jo.addProperty("error", "Fail Username is already taken!");
+            return new ResponseEntity<String>(jo.toString(), HttpStatus.BAD_REQUEST);
         }
 
         // Creating user's account
@@ -75,6 +78,8 @@ public class AuthController {
 
         user.setRoles(roles);
         userRepository.save(user);
-        return ResponseEntity.ok().body("User registered successfully!");
+        jo.addProperty("result", "User Registered");
+
+        return ResponseEntity.ok().body(jo.toString());
     }
 }
