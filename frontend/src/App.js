@@ -10,17 +10,17 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Head />
-
         <Router>
-          <Switch>
-            <Route path="/signin" exact component={Auth} />
-            <Route path="/signup" exact component={Auth} />
-            <Route path="/" component={Home} />
-          </Switch>
+          <div>
+            <Head />
+            <Switch>
+              <Route path="/login" exact component={Auth} />
+              <Route path="/signup" exact component={Auth} />
+              <Route path="/" component={Home} />
+            </Switch>
+            <Foot />
+          </div>
         </Router>
-
-        <Foot />
       </div>
     );
   }
