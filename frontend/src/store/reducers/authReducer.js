@@ -1,9 +1,9 @@
 const initialState = {};
-const loginReducer = (state = initialState, action) => {
+const authReducer = (state = initialState, action) => {
   switch (action.type) {
     default:
       return state;
   }
 };
 
-export default loginReducer;
+export default authReducer;
