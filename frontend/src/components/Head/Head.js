@@ -8,10 +8,11 @@ export default class Head extends Component {
     return (
       <Header>
         <div className="logo" />
-        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']} style={{ lineHeight: '64px' }}>
-          <Menu.Item key="1">nav 1</Menu.Item>
-          <Menu.Item key="2">nav 2</Menu.Item>
-          <Menu.Item key="3">nav 3</Menu.Item>
+        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']} style={{ lineHeight: '64px' }}>
+          <Menu.Item key="1">Home</Menu.Item>
+          <Menu.Item key="2">Movies</Menu.Item>
+          <Menu.Item key="3">Profile</Menu.Item>
+          <Menu.Item key="4">Watchlist</Menu.Item>
         </Menu>
       </Header>
     );
