@@ -4,6 +4,7 @@ import './App.css';
 import Head from './components/Head/Head';
 import Foot from './components/Foot/Foot';
 import Home from './components/Home/Home';
+import Auth from './components/Auth/Auth';
 
 class App extends Component {
   render() {
@@ -13,6 +14,8 @@ class App extends Component {
 
         <Router>
           <Switch>
+            <Route path="/signin" exact component={Auth} />
+            <Route path="/signup" exact component={Auth} />
             <Route path="/" component={Home} />
           </Switch>
         </Router>
