@@ -37,7 +37,7 @@ class Auth extends Component {
         )
       });
     } else if (nextProps.loggedIn === true) {
-      console.log('loggedIn ' + nextProps.token);
+      // console.log('loggedIn ' + nextProps.token);
       saveToken(nextProps.token);
       this.props.history.push('/profile');
     } else if (nextProps.error && Object.keys(nextProps.error).length !== 0) {

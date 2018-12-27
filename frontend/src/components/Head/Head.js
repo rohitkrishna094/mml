@@ -5,46 +5,63 @@ import { NavLink, withRouter } from 'react-router-dom';
 const { Header } = Layout;
 
 class Head extends Component {
-  state = { selectedKeys: ['1'] };
-
+  state = { selectedKeys: '1' };
+  shouldComponentUpdate(nextProps) {
+    return nextProps.location !== this.props.location;
+  }
   componentWillMount() {
     this.makeActiveClass(this.props.location.pathname);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const prevStateString = JSON.stringify(prevState);
-    const stateString = JSON.stringify(this.state);
-    if (prevStateString !== stateString) {
-      this.makeActiveClass(this.props.location.pathname);
-    }
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps.location.pathname + ' : ' + this.props.location.pathname);
+    this.makeActiveClass(nextProps.location.pathname);
   }
 
-  makeActiveClass(urlName) {
+  makeActiveClass = urlName => {
     if (urlName === '/' || urlName === 'home') {
-      this.setState({ ...this.state, selectedKeys: ['1'] });
+      this.setState({ ...this.state, selectedKeys: this.mapUrlToKey(urlName) });
     } else if (urlName === '/movies') {
-      this.setState({ ...this.state, selectedKeys: ['2'] });
+      this.setState({ ...this.state, selectedKeys: this.mapUrlToKey(urlName) });
     } else if (urlName === '/profile') {
-      this.setState({ ...this.state, selectedKeys: ['3'] });
+      this.setState({ ...this.state, selectedKeys: this.mapUrlToKey(urlName) });
     } else if (urlName === '/watchlist') {
-      this.setState({ ...this.state, selectedKeys: ['4'] });
+      this.setState({ ...this.state, selectedKeys: this.mapUrlToKey(urlName) });
     } else if (urlName === '/signup') {
-      this.setState({ ...this.state, selectedKeys: ['5'] });
+      this.setState({ ...this.state, selectedKeys: this.mapUrlToKey(urlName) });
     } else if (urlName === '/login') {
-      this.setState({ ...this.state, selectedKeys: ['6'] });
+      this.setState({ ...this.state, selectedKeys: this.mapUrlToKey(urlName) });
     }
-  }
+  };
+
+  mapUrlToKey = urlName => {
+    if (urlName === '/' || urlName === 'home') {
+      return '1';
+    } else if (urlName === '/movies') {
+      return '2';
+    } else if (urlName === '/profile') {
+      return '3';
+    } else if (urlName === '/watchlist') {
+      return '4';
+    } else if (urlName === '/signup') {
+      return '5';
+    } else if (urlName === '/login') {
+      return '6';
+    }
+    return '7';
+  };
 
   render() {
+    console.log('render ' + this.state.selectedKeys);
+
+    const sk = [];
+    sk.push(this.state.selectedKeys);
+    console.log(sk);
+
     return (
       <Header>
         <div className="logo" />
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={this.state.selectedKeys}
-          style={{ lineHeight: '64px' }}
-        >
+        <Menu theme="dark" mode="horizontal" selectedKeys={sk} style={{ lineHeight: '64px' }}>
           <Menu.Item key="1">
             <NavLink to="/">Home</NavLink>
           </Menu.Item>

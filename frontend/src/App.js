@@ -9,11 +9,13 @@ import Watchlist from './components/Watchlist/Watchlist';
 import Profile from './components/Profile/Profile';
 import Movies from './components/Movies/Movies';
 import { Layout } from 'antd';
+import { isAuthenticated } from './util/jwtUtil';
 
 const { Content } = Layout;
 
 class App extends Component {
   render() {
+    console.log(isAuthenticated());
     const footerHeight = '135px';
     return (
       <div className="App">
@@ -22,11 +24,16 @@ class App extends Component {
             <Head />
             <Content style={{ height: `calc(100vh - ${footerHeight})` }}>
               <Switch>
-                <Route path="/login" exact component={Auth} />
-                <Route path="/signup" exact component={Auth} />
+                {/* {!isAuthenticated() ? (
+                ) : null} */}
                 <Route path="/watchlist" exact component={Watchlist} />
                 <Route path="/profile" exact component={Profile} />
                 <Route path="/movies" exact component={Movies} />
+                {/* <React.Fragment> */}
+                <Route path="/login" exact component={Auth} />
+                <Route path="/signup" exact component={Auth} />
+                {/* </React.Fragment> */}
+
                 <Route path="/" component={Home} />
               </Switch>
             </Content>

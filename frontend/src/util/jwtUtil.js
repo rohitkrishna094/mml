@@ -9,7 +9,8 @@ export const removeToken = () => {
 
 export const isAuthenticated = () => {
   const val = localStorage.getItem('token');
-  return val !== undefined;
+  //   console.log(val + ' : ' + (val !== null));
+  return val !== null;
 };
 
 export const setHeaders = headers => {
