@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Layout, Menu } from 'antd';
 import { NavLink, withRouter } from 'react-router-dom';
+import { isAuthenticated } from '../../util/jwtUtil';
 
 const { Header } = Layout;
 
@@ -19,19 +20,7 @@ class Head extends Component {
   }
 
   makeActiveClass = urlName => {
-    if (urlName === '/' || urlName === 'home') {
-      this.setState({ ...this.state, selectedKeys: this.mapUrlToKey(urlName) });
-    } else if (urlName === '/movies') {
-      this.setState({ ...this.state, selectedKeys: this.mapUrlToKey(urlName) });
-    } else if (urlName === '/profile') {
-      this.setState({ ...this.state, selectedKeys: this.mapUrlToKey(urlName) });
-    } else if (urlName === '/watchlist') {
-      this.setState({ ...this.state, selectedKeys: this.mapUrlToKey(urlName) });
-    } else if (urlName === '/signup') {
-      this.setState({ ...this.state, selectedKeys: this.mapUrlToKey(urlName) });
-    } else if (urlName === '/login') {
-      this.setState({ ...this.state, selectedKeys: this.mapUrlToKey(urlName) });
-    }
+    this.setState({ ...this.state, selectedKeys: this.mapUrlToKey(urlName) });
   };
 
   mapUrlToKey = urlName => {
@@ -52,16 +41,33 @@ class Head extends Component {
   };
 
   render() {
-    console.log('render ' + this.state.selectedKeys);
-
-    const sk = [];
-    sk.push(this.state.selectedKeys);
-    console.log(sk);
-
+    let loginButton, signupButton, userNode;
+    if (!isAuthenticated()) {
+      signupButton = (
+        <Menu.Item key="5" style={{ float: 'right' }}>
+          <NavLink to="/signup">Signup</NavLink>
+        </Menu.Item>
+      );
+      loginButton = (
+        <Menu.Item key="6" style={{ float: 'right' }}>
+          <NavLink to="/login">Login</NavLink>
+        </Menu.Item>
+      );
+      userNode = null;
+    } else {
+      userNode = (
+        <Menu.Item key="7" style={{ float: 'right', cursor: 'disabled' }}>
+          {/* <NavLink to="/login">Login</NavLink> */}
+          User
+        </Menu.Item>
+      );
+      loginButton = null;
+      signupButton = null;
+    }
     return (
       <Header>
         <div className="logo" />
-        <Menu theme="dark" mode="horizontal" selectedKeys={sk} style={{ lineHeight: '64px' }}>
+        <Menu theme="dark" mode="horizontal" selectedKeys={[this.state.selectedKeys]} style={{ lineHeight: '64px' }}>
           <Menu.Item key="1">
             <NavLink to="/">Home</NavLink>
           </Menu.Item>
@@ -74,12 +80,9 @@ class Head extends Component {
           <Menu.Item key="4">
             <NavLink to="/watchlist">Watchlist</NavLink>
           </Menu.Item>
-          <Menu.Item key="5" style={{ float: 'right' }}>
-            <NavLink to="/signup">Signup</NavLink>
-          </Menu.Item>
-          <Menu.Item key="6" style={{ float: 'right' }}>
-            <NavLink to="/login">Login</NavLink>
-          </Menu.Item>
+          {signupButton}
+          {loginButton}
+          {userNode}
         </Menu>
       </Header>
     );

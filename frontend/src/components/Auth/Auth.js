@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import './Auth.css';
 import { signup, removeSignUpError, login } from '../../store/actions/authActions';
 import { saveToken } from '../../util/jwtUtil';
-
+import { withRouter } from 'react-router';
 class Auth extends Component {
   state = { signUpCredentials: { username: '', password: '' }, loginCredentials: { username: '', password: '' } };
 
@@ -135,4 +135,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Auth);
+)(withRouter(Auth));

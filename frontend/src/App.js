@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
+import { Route, Switch, BrowserRouter as Router, Redirect } from 'react-router-dom';
 import './App.css';
 import Head from './components/Head/Head';
 import Foot from './components/Foot/Foot';
@@ -24,16 +24,15 @@ class App extends Component {
             <Head />
             <Content style={{ height: `calc(100vh - ${footerHeight})` }}>
               <Switch>
-                {/* {!isAuthenticated() ? (
-                ) : null} */}
                 <Route path="/watchlist" exact component={Watchlist} />
                 <Route path="/profile" exact component={Profile} />
                 <Route path="/movies" exact component={Movies} />
-                {/* <React.Fragment> */}
-                <Route path="/login" exact component={Auth} />
-                <Route path="/signup" exact component={Auth} />
-                {/* </React.Fragment> */}
-
+                <Route exact path="/login" render={() => (isAuthenticated() ? <Redirect to="/profile" /> : <Auth />)} />
+                <Route
+                  exact
+                  path="/signup"
+                  render={() => (isAuthenticated() ? <Redirect to="/profile" /> : <Auth />)}
+                />
                 <Route path="/" component={Home} />
               </Switch>
             </Content>
