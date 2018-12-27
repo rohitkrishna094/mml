@@ -15,7 +15,7 @@ public class MyCustomErrorAttributes extends DefaultErrorAttributes {
         // TODO Auto-generated method stub
         Map<String, Object> errorAttributes = super.getErrorAttributes(webRequest, includeStackTrace);
         errorAttributes.remove("trace");
-        errorAttributes.remove("error");
+        // errorAttributes.remove("error");
         return errorAttributes;
     }
 

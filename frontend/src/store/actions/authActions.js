@@ -10,8 +10,7 @@ import {
 export const signup = credentials => {
   return (dispatch, getState) => {
     // call backend service here
-    const username = credentials.username;
-    const password = credentials.password;
+    const { username, password } = credentials;
     const url = `${baseUrl}/auth/signup`;
     fetch(url, {
       method: 'POST',
@@ -20,21 +19,36 @@ export const signup = credentials => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
-        // const data = res.json();
-        // const errors = [];
-        // if (res.status === 400) {
-        //   if (data.error) errors.push(data.error);
-        //   else if (data.errors) errors.push(data.errors);
-        //   dispatch({ type: SIGNUP_ERROR, payload: { errors } });
-        // }
-        // return data;
         let error = {};
         if (data.status !== 200) {
           error = data.error;
           dispatch({ type: SIGNUP_ERROR, payload: { error } });
         } else if (data.status === 200) {
           dispatch({ type: SIGNUP_SUCCESS, payload: { username } });
+        }
+      });
+  };
+};
+
+export const login = credentials => {
+  return (dispatch, getState) => {
+    // call backend servic ehere
+    const { username, password } = credentials;
+    const url = `${baseUrl}/auth/signin`;
+
+    fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({ username, password }),
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then(res => res.json())
+      .then(data => {
+        let error = {};
+        if (data.status !== 200) {
+          error = data.error;
+          dispatch({ type: LOGIN_ERROR, payload: { error } });
+        } else if (data.status === 200) {
+          dispatch({ type: LOGIN_SUCCESS, payload: { token: data.accessToken } });
         }
       });
   };

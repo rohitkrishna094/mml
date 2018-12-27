@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { Row, Col, Input, Icon, Button, notification } from 'antd';
 import { connect } from 'react-redux';
 import './Auth.css';
-import { signup, removeSignUpError } from '../../store/actions/authActions';
+import { signup, removeSignUpError, login } from '../../store/actions/authActions';
+import { saveToken } from '../../util/jwtUtil';
 
 class Auth extends Component {
   state = { signUpCredentials: { username: '', password: '' }, loginCredentials: { username: '', password: '' } };
@@ -12,6 +13,15 @@ class Auth extends Component {
       ...this.state,
       signUpCredentials: {
         ...this.state.signUpCredentials,
+        [e.target.name]: e.target.value
+      }
+    });
+  };
+  onLoginInputChange = e => {
+    this.setState({
+      ...this.state,
+      loginCredentials: {
+        ...this.state.loginCredentials,
         [e.target.name]: e.target.value
       }
     });
@@ -26,10 +36,14 @@ class Auth extends Component {
           'You have been successfully signed up. Please login with same credentials to continue.'
         )
       });
-    } else if (nextProps.signedUpError && Object.keys(nextProps.signedUpError).length !== 0) {
+    } else if (nextProps.loggedIn === true) {
+      console.log('loggedIn ' + nextProps.token);
+      saveToken(nextProps.token);
+      this.props.history.push('/profile');
+    } else if (nextProps.error && Object.keys(nextProps.error).length !== 0) {
       this.setState({
         ...this.state,
-        notificationNode: this.openNotification('Signup Error', 'Error while sign up: ' + nextProps.signedUpError)
+        notificationNode: this.openNotification('Auth Error', 'Error while sign up: ' + nextProps.error)
       });
       this.props.removeSignUpError();
     } else {
@@ -50,7 +64,7 @@ class Auth extends Component {
   render() {
     return (
       <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
-        {this.state.notificationNode ? this.state.notificationNode : null};
+        {this.state.notificationNode ? this.state.notificationNode : null}
         <Row type="flex" justify="space-around" align="middle">
           <Col span={4} offset={6}>
             <Input
@@ -80,14 +94,18 @@ class Auth extends Component {
               placeholder="Enter your username"
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
               className="Auth_Input"
+              onChange={e => this.onLoginInputChange(e)}
+              name="username"
             />
             <Input
               placeholder="Enter your password"
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
               className="Auth_Input"
               type="password"
+              name="password"
+              onChange={e => this.onLoginInputChange(e)}
             />
-            <Button type="danger" block>
+            <Button type="danger" block onClick={e => this.props.login(this.state.loginCredentials)}>
               Login
             </Button>
           </Col>
@@ -100,13 +118,17 @@ class Auth extends Component {
 const mapStateToProps = state => {
   return {
     signedUp: state.auth.signedUp,
-    signedUpError: state.auth.error
+    error: state.auth.error,
+    loginError: state.auth.error,
+    loggedIn: state.auth.loggedIn,
+    token: state.auth.token
   };
 };
 const mapDispatchToProps = dispatch => {
   return {
     signup: signUpCredentials => dispatch(signup(signUpCredentials)),
-    removeSignUpError: () => dispatch(removeSignUpError())
+    removeSignUpError: () => dispatch(removeSignUpError()),
+    login: loginCredentials => dispatch(login(loginCredentials))
   };
 };
 
