@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Layout, Menu, Icon } from 'antd';
 import { NavLink, withRouter } from 'react-router-dom';
-import { isAuthenticated, logout } from '../../util/jwtUtil';
+import { isAuthenticated, logout, getCurrentUserName } from '../../util/jwtUtil';
 
 const { Header } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -65,7 +65,7 @@ class Head extends Component {
         <SubMenu
           title={
             <span className="submenu-title-wrapper">
-              User&nbsp;
+              {getCurrentUserName()}&nbsp;
               <Icon type="caret-down" />
             </span>
           }
