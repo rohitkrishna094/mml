@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Icon, Button } from 'antd';
+import { Row, Col, Input, Icon, Button, notification } from 'antd';
+import { connect } from 'react-redux';
 import './Auth.css';
+import { signup } from '../../store/actions/authActions';
 
-export default class Auth extends Component {
+class Auth extends Component {
   state = { credentials: { username: '', password: '' } };
 
   onChange = e => {
@@ -10,17 +12,44 @@ export default class Auth extends Component {
       credentials: {
         ...this.state.credentials,
         [e.target.name]: e.target.value
-      }
+      },
+      notificationNode: null
     });
   };
 
-  onClick = e => {
-    console.log(this.state.credentials);
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.signedUp) {
+      this.setState({
+        ...this.state,
+        notificationNode: this.openNotification(
+          'Signup Success',
+          'You have been successfully signed up. Please login with same credentials to continue.'
+        )
+      });
+    } else if (nextProps.signedUpError) {
+      this.setState({
+        ...this.state,
+        notificationNode: this.openNotification('Signup Error', 'Error while sign up: ' + nextProps.signedUpError)
+      });
+    } else {
+      this.setState({ ...this.state, notificationNode: null });
+    }
+  }
+
+  openNotification = (message, description) => {
+    notification.open({
+      message: message,
+      description: description,
+      onClick: () => {
+        console.log('Notification Clicked!');
+      }
+    });
   };
 
   render() {
     return (
       <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
+        {this.state.notificationNode ? this.state.notificationNode : null};
         <Row type="flex" justify="space-around" align="middle">
           <Col span={4} offset={6}>
             <Input
@@ -43,7 +72,7 @@ export default class Auth extends Component {
               className="Auth_Input"
               name="password"
             />
-            <Button type="primary" block onClick={e => this.onClick(e)}>
+            <Button type="primary" block onClick={e => this.props.signup(this.state.credentials)}>
               Sign Up
             </Button>
           </Col>
@@ -70,3 +99,20 @@ export default class Auth extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    signedUp: state.auth.signedUp,
+    signedUpError: state.auth.error
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    signup: credentials => dispatch(signup(credentials))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Auth);

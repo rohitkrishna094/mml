@@ -13,10 +13,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.JsonObject;
@@ -66,6 +72,7 @@ public class AuthController {
         JsonObject jo = new JsonObject();
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             jo.addProperty("error", "Fail Username is already taken!");
+            jo.addProperty("status", HttpStatus.BAD_REQUEST.value());
             return new ResponseEntity<String>(jo.toString(), HttpStatus.BAD_REQUEST);
         }
 
@@ -79,7 +86,25 @@ public class AuthController {
         user.setRoles(roles);
         userRepository.save(user);
         jo.addProperty("result", "User Registered");
+        jo.addProperty("status", HttpStatus.OK.value());
 
         return ResponseEntity.ok().body(jo.toString());
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public String processValidationError(MethodArgumentNotValidException ex) {
+        BindingResult result = ex.getBindingResult();
+        FieldError error = result.getFieldError();
+        // System.out.println(result);
+        // System.out.println("----------------");
+        // System.out.println(error.getDefaultMessage() + " : " + error.getCodes() + " : " + error.getCode());
+
+        JsonObject jo = new JsonObject();
+        jo.addProperty("status", HttpStatus.BAD_REQUEST.value());
+        jo.addProperty("error", error.getDefaultMessage());
+        return jo.toString();
+    }
+
 }
