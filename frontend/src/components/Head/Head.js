@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Icon } from 'antd';
 import { NavLink, withRouter } from 'react-router-dom';
-import { isAuthenticated } from '../../util/jwtUtil';
+import { isAuthenticated, logout } from '../../util/jwtUtil';
 
 const { Header } = Layout;
+const SubMenu = Menu.SubMenu;
 
 class Head extends Component {
   state = { selectedKeys: '1' };
+
   shouldComponentUpdate(nextProps) {
     return nextProps.location !== this.props.location;
   }
@@ -15,12 +17,16 @@ class Head extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps.location.pathname + ' : ' + this.props.location.pathname);
     this.makeActiveClass(nextProps.location.pathname);
   }
 
   makeActiveClass = urlName => {
     this.setState({ ...this.state, selectedKeys: this.mapUrlToKey(urlName) });
+  };
+
+  onLogoutClick = e => {
+    logout();
+    this.props.history.push('/login');
   };
 
   mapUrlToKey = urlName => {
@@ -56,10 +62,24 @@ class Head extends Component {
       userNode = null;
     } else {
       userNode = (
-        <Menu.Item key="7" style={{ float: 'right', cursor: 'disabled' }}>
-          {/* <NavLink to="/login">Login</NavLink> */}
-          User
-        </Menu.Item>
+        <SubMenu
+          title={
+            <span className="submenu-title-wrapper">
+              User&nbsp;
+              <Icon type="caret-down" />
+            </span>
+          }
+          style={{ float: 'right' }}
+        >
+          <Menu.Item key="setting:1" onClick={e => this.onLogoutClick(e)}>
+            Logout
+          </Menu.Item>
+        </SubMenu>
+
+        // <Menu.Item key="7" style={{ float: 'right' }}>
+
+        //   User
+        // </Menu.Item>
       );
       loginButton = null;
       signupButton = null;

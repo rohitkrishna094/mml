@@ -23,3 +23,7 @@ export const setHeaders = headers => {
     return headers;
   }
 };
+
+export const logout = () => {
+  removeToken();
+};
