@@ -1,5 +1,11 @@
 import { baseUrl } from '../../api/apiInfo';
-import { SIGNUP_SUCCESS, SIGNUP_ERROR, LOGIN_ERROR, LOGIN_SUCCESS } from '../actionTypes/actionTypes';
+import {
+  SIGNUP_SUCCESS,
+  SIGNUP_ERROR,
+  LOGIN_ERROR,
+  LOGIN_SUCCESS,
+  REMOVE_SIGNUP_ERROR
+} from '../actionTypes/actionTypes';
 
 export const signup = credentials => {
   return (dispatch, getState) => {
@@ -31,5 +37,11 @@ export const signup = credentials => {
           dispatch({ type: SIGNUP_SUCCESS, payload: { username } });
         }
       });
+  };
+};
+
+export const removeSignUpError = () => {
+  return (dispatch, getState) => {
+    dispatch({ type: REMOVE_SIGNUP_ERROR });
   };
 };

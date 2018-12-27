@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col, Input, Icon, Button, notification } from 'antd';
 import { connect } from 'react-redux';
 import './Auth.css';
-import { signup } from '../../store/actions/authActions';
+import { signup, removeSignUpError } from '../../store/actions/authActions';
 
 class Auth extends Component {
   state = { credentials: { username: '', password: '' } };
@@ -26,11 +26,12 @@ class Auth extends Component {
           'You have been successfully signed up. Please login with same credentials to continue.'
         )
       });
-    } else if (nextProps.signedUpError) {
+    } else if (nextProps.signedUpError && Object.keys(nextProps.signedUpError).length !== 0) {
       this.setState({
         ...this.state,
         notificationNode: this.openNotification('Signup Error', 'Error while sign up: ' + nextProps.signedUpError)
       });
+      this.props.removeSignUpError();
     } else {
       this.setState({ ...this.state, notificationNode: null });
     }
@@ -108,7 +109,8 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
   return {
-    signup: credentials => dispatch(signup(credentials))
+    signup: credentials => dispatch(signup(credentials)),
+    removeSignUpError: () => dispatch(removeSignUpError())
   };
 };
 
