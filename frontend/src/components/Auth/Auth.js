@@ -5,15 +5,15 @@ import './Auth.css';
 import { signup, removeSignUpError } from '../../store/actions/authActions';
 
 class Auth extends Component {
-  state = { credentials: { username: '', password: '' } };
+  state = { signUpCredentials: { username: '', password: '' }, loginCredentials: { username: '', password: '' } };
 
-  onChange = e => {
+  onSignUpInputChange = e => {
     this.setState({
-      credentials: {
-        ...this.state.credentials,
+      ...this.state,
+      signUpCredentials: {
+        ...this.state.signUpCredentials,
         [e.target.name]: e.target.value
-      },
-      notificationNode: null
+      }
     });
   };
 
@@ -57,23 +57,18 @@ class Auth extends Component {
               placeholder="Enter your username"
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
               className="Auth_Input"
-              onChange={e => this.onChange(e)}
+              onChange={e => this.onSignUpInputChange(e)}
               name="username"
             />
             <Input
               placeholder="Enter your password"
               prefix={<Icon type="key" style={{ color: 'rgba(0,0,0,.25)' }} />}
               className="Auth_Input"
-              onChange={e => this.onChange(e)}
+              onChange={e => this.onSignUpInputChange(e)}
               name="password"
+              type="password"
             />
-            <Input
-              placeholder="Confirm your password"
-              prefix={<Icon type="key" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              className="Auth_Input"
-              name="password"
-            />
-            <Button type="primary" block onClick={e => this.props.signup(this.state.credentials)}>
+            <Button type="primary" block onClick={e => this.props.signup(this.state.signUpCredentials)}>
               Sign Up
             </Button>
           </Col>
@@ -90,6 +85,7 @@ class Auth extends Component {
               placeholder="Enter your password"
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
               className="Auth_Input"
+              type="password"
             />
             <Button type="danger" block>
               Login
@@ -109,7 +105,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
   return {
-    signup: credentials => dispatch(signup(credentials)),
+    signup: signUpCredentials => dispatch(signup(signUpCredentials)),
     removeSignUpError: () => dispatch(removeSignUpError())
   };
 };
