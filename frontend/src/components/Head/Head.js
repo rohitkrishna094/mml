@@ -75,11 +75,6 @@ class Head extends Component {
             Logout
           </Menu.Item>
         </SubMenu>
-
-        // <Menu.Item key="7" style={{ float: 'right' }}>
-
-        //   User
-        // </Menu.Item>
       );
       loginButton = null;
       signupButton = null;
