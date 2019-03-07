@@ -1,0 +1,49 @@
+* 
+---------------------------------------------------------------------------------------------------------
+Partially Done(Since we will keep on adding features)
+-------------------
+* Movies Service 
+* User Service
+* Watchlist service(/users)
+  - watchlist [currentlyWatching, completed, onHold, droppped, planToWatch, notInterested]
+	- /watchlist - [GET] Returns an empty list of all stuff if new user(for current user)
+	- {id}/watchlist/- [GET] returns watchlist for that user. If current user, then it redirects to above
+	- watchlist/add - [POST] saves a new item. Pass json as {"onHold": {}}; Only one movie can be passed like this. For now no batch operations
+	- watchlist/delete/{wid} - [DELETE] delete this wid item for id user
+* Profile Service
+	- /profile - [GET] get profile info for current user
+	- /profile/{id} - [GET] profile info for id user. If current user, redirect to /profile
+	- /profile - [POST] Update profile info for current user. Cant update profile info for anyone else
+	- No create and delete. Create happens automatically when user signsup. Delete happens automatically when user deletes his/her account(feature not yet implemented)
+* Settings service (dark theme)
+	- /settings - [GET] get settings info for current user
+	- /settings - [POST] Update settings info for current user. Cant update settings info for anyone else
+	- No create and delete. Create happens automatically when user signsup. Delete happens automatically when user deletes his/her account(feature not yet implemented)
+---------------------------------------------------------------------------------------------------------
+Todo at the end
+---------------
+* Authenticate every request including MovieController, UserController
+* Write Unit Tests(very low priority)
+* Extract common functionality away from controllers to service layer
+* Watchlist saving - check duplicates
+* Add url field for movie model.
+* Add url field for watchlist model.
+* Add url field for user model.
+* Do thorough testing of all controller methods
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Frontend
+---------
+* Auth Page
+* Movies Page
+* Settings Page
+* Watchlist Page
+* Profile Page
+* Home Page
+
+Done
+----
+* Header
+* Footer
+
+Signup to Login error
