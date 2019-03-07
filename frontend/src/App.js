@@ -15,7 +15,7 @@ const { Content } = Layout;
 
 class App extends Component {
   render() {
-    console.log(isAuthenticated());
+    console.log('isAuthenticated?: ', isAuthenticated());
     const footerHeight = '135px';
     return (
       <div className="App">

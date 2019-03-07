@@ -4,3 +4,6 @@ export const SIGNUP_ERROR = 'SIGNUP_ERROR';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_ERROR = 'LOGIN_ERROR';
 export const REMOVE_SIGNUP_ERROR = 'REMOVE_SIGNUP_ERROR';
+
+// Movies action types
+export const LOAD_MOVIES = 'LOAD_MOVIES';
